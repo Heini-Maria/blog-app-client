@@ -28,6 +28,7 @@ const AddPost = () => {
           navigate("/error");
         } else {
           navigate("/");
+          navigate(0);
         }
       });
   };

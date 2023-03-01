@@ -43,6 +43,7 @@ const PostDetails = ({ authState, posts }) => {
       )
       .then(() => {
         navigate("/");
+        navigate(0);
       });
   };
 
@@ -55,7 +56,7 @@ const PostDetails = ({ authState, posts }) => {
     const isValid = await commentSchema.isValid(obj);
     if (!isValid) {
       setError("post can only contain letters, numbers and - ! . , ? : or )");
-    }else{
+    } else {
       axios
         .post(
           `https://blog-app-api-production-651f.up.railway.app/comments`,
