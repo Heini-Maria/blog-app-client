@@ -45,7 +45,7 @@ const App = () => {
   };
   useEffect(() => {
     axios
-      .get("http://localhost:3001/auth/auth", {
+      .get("https://blog-app-api-production-651f.up.railway.app/auth/auth", {
         headers: {
           accessToken: accessToken(),
         },
