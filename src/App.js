@@ -28,7 +28,7 @@ const App = () => {
 
   const getPosts = () => {
     axios
-      .get(`http://localhost:3001/posts`, {
+      .get(`https://blog-app-api-production-651f.up.railway.app/posts`, {
         headers: { accessToken: accessToken() },
       })
       .then((response) => {

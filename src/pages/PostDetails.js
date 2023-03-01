@@ -20,7 +20,7 @@ const PostDetails = ({ authState, posts }) => {
       navigate("/login");
     } else {
       try {
-        axios.get(`http://localhost:3001/comments/${id}`).then((response) => {
+        axios.get(`https://blog-app-api-production-651f.up.railway.app/comments/${id}`).then((response) => {
           setComments(response.data);
         });
       } catch (error) {
@@ -31,7 +31,7 @@ const PostDetails = ({ authState, posts }) => {
 
   const deletePost = (id) => {
     axios
-      .delete(`http://localhost:3001/posts/${id}`, {
+      .delete(`https://blog-app-api-production-651f.up.railway.app/posts/${id}`, {
         headers: { accessToken: accessToken() },
       })
       .then(() => {
@@ -49,7 +49,7 @@ const PostDetails = ({ authState, posts }) => {
     if (isValid) {
       axios
         .post(
-          `http://localhost:3001/comments`,
+          `https://blog-app-api-production-651f.up.railway.app/comments`,
           {
             comment: newComment,
             PostId: id,

@@ -12,7 +12,7 @@ const Registration = () => {
   };
 
   const onSubmit = (data) => {
-    axios.post("http://localhost:3001/auth", data).then((response) => {
+    axios.post("https://blog-app-api-production-651f.up.railway.app/auth", data).then((response) => {
       if (response.data.error) {
         alert(response.data.error);
       }

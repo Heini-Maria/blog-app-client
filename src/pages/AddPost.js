@@ -20,7 +20,7 @@ const AddPost = () => {
 
   const addPost = (obj) => {
     axios
-      .post(`http://localhost:3001/posts`, obj, {
+      .post(`https://blog-app-api-production-651f.up.railway.app/posts`, obj, {
         headers: { accessToken: accessToken() },
       })
       .then((response) => {

@@ -12,7 +12,7 @@ const Post = ({ post, likedPosts }) => {
   const likeAPost = (postId) => {
     axios
       .post(
-        `http://localhost:3001/likes`,
+        `https://blog-app-api-production-651f.up.railway.app/likes`,
         { PostId: postId },
         {
           headers: {
