@@ -20,7 +20,7 @@ const Header = ({ toggleTheme, theme, authState, setAuthState }) => {
     <header className="header">
       <NavLink className="logo" to="/">
         <h1>Nerdy Facts</h1>
-        <span>micro blog</span>
+        <span>microblog</span>
       </NavLink>
       <div className="header-actions">
         <div className="switch-container">
