@@ -12,7 +12,7 @@ router.get("/", validateToken, async (req, res) => {
   const likedPosts = await Likes.findAll({ where: { UserId: req.user.id } });
   return res.json({ listOfPosts: listOfPosts, likedPosts: likedPosts });
 });
-router.get("/byId/:id", async (req, res) => {
+router.get("/byId/:id", validateToken, async (req, res) => {
   const id = req.params.id;
   const post = await Posts.findByPk(id, { include: [Likes] });
   return res.json(post);

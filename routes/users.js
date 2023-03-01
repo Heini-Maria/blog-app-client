@@ -8,6 +8,8 @@ const { check, validationResult } = require('express-validator');
 
 router.post("/", async (req, res) => {
   const { username, password } = req.body;
+  const user = await Users.findOne({ where: { username: username } });
+  if(!user) {
     await bcrypt.hash(password, 10).then((hash) => {
       Users.create({
         username: username,
@@ -15,6 +17,8 @@ router.post("/", async (req, res) => {
       });
       return res.json("SUCCESS");
     });
+  }
+  return alert("username already exists")
   });
 
 router.post("/login", async (req, res) => {
