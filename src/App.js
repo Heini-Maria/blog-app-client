@@ -67,7 +67,7 @@ const App = () => {
     getPosts();
     const interval = setInterval(() => {
       getPosts();
-    }, 10000);
+    }, 5000);
     return () => clearInterval(interval);
   }, []);
 
