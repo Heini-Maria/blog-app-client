@@ -33,7 +33,7 @@ const EditPost = () => {
     };
     const isValid = await postSchema.isValid(obj);
     if (!isValid) {
-      setError("post can only contain letters, numbers and - ! ? : or )");
+      setError("post can only contain letters, numbers and - ! . , ? : or )");
     } else {
       axios
         .put(`https://blog-app-api-production-651f.up.railway.app/posts/${id}`, obj, {

@@ -5,8 +5,8 @@ export const commentSchema = Yup.object().shape({
     .min(3)
     .max(45)
     .matches(
-      "^[.a-zA-Z0-9-! ) : ? ]*$",
-      "post can only contain letters, numbers and - ! ? : or )."
+      "^[.a-zA-Z0-9-! ) , ( : ? ]*$",
+      "title can only contain letters, numbers and - ! . , ? : or )."
     )
     .required(),
 });

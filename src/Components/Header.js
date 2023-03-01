@@ -12,8 +12,8 @@ const Header = ({ toggleTheme, theme, authState, setAuthState }) => {
       id: 0,
       status: false,
     });
-    navigate("/login");
-    window.location.reload();
+    navigate("/");
+    navigate(0);
   };
 
   return (

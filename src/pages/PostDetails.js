@@ -20,9 +20,13 @@ const PostDetails = ({ authState, posts }) => {
       navigate("/login");
     } else {
       try {
-        axios.get(`https://blog-app-api-production-651f.up.railway.app/comments/${id}`).then((response) => {
-          setComments(response.data);
-        });
+        axios
+          .get(
+            `https://blog-app-api-production-651f.up.railway.app/comments/${id}`
+          )
+          .then((response) => {
+            setComments(response.data);
+          });
       } catch (error) {
         navigate("/error");
       }
@@ -31,9 +35,12 @@ const PostDetails = ({ authState, posts }) => {
 
   const deletePost = (id) => {
     axios
-      .delete(`https://blog-app-api-production-651f.up.railway.app/posts/${id}`, {
-        headers: { accessToken: accessToken() },
-      })
+      .delete(
+        `https://blog-app-api-production-651f.up.railway.app/posts/${id}`,
+        {
+          headers: { accessToken: accessToken() },
+        }
+      )
       .then(() => {
         navigate("/");
       });
@@ -46,7 +53,9 @@ const PostDetails = ({ authState, posts }) => {
       comment: newComment,
     };
     const isValid = await commentSchema.isValid(obj);
-    if (isValid) {
+    if (!isValid) {
+      setError("post can only contain letters, numbers and - ! . , ? : or )");
+    }else{
       axios
         .post(
           `https://blog-app-api-production-651f.up.railway.app/comments`,
@@ -74,7 +83,6 @@ const PostDetails = ({ authState, posts }) => {
           }
         });
     }
-    setError("post can only contain letters, numbers and - ! ? : or )");
   };
 
   return (
