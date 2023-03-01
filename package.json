@@ -5,8 +5,8 @@
   "main": "./src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack-dev-server . --hot",
-    "build": "webpack .",
+    "start": "webpack-dev-server --hot --open --mode development",
+    "build": "webpack --config webpack.config.js --mode production",
     "format": "prettier --write \"src/**/*.{js,jsx}\"",
     "lint": "eslint \"src/**/*.{js,jsx}\" --quiet"
   },
