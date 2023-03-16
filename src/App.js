@@ -65,10 +65,10 @@ const App = () => {
 
   useEffect(() => {
     getPosts();
-    const interval = setInterval(() => {
+  /*   const interval = setInterval(() => {
       getPosts();
     }, 5000);
-    return () => clearInterval(interval);
+    return () => clearInterval(interval); */
   }, []);
 
   const toggleTheme = () => {

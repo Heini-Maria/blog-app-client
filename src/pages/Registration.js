@@ -12,12 +12,15 @@ const Registration = () => {
   };
 
   const onSubmit = (data) => {
-    axios.post("https://blog-app-api-production-651f.up.railway.app/auth", data).then((response) => {
-      if (response.data.error) {
-        alert(response.data.error);
-      }
-      navigate("/login");
-    });
+    axios
+      .post("https://blog-app-api-production-651f.up.railway.app/auth", data)
+      .then((response) => {
+        console.log(response);
+        if (response.data.error) {
+          alert(response.data.error);
+        }
+        navigate("/login");
+      });
   };
   return (
     <div className="register">
@@ -43,7 +46,7 @@ const Registration = () => {
             <ErrorMessage name="password" component="span" />
           </span>
           <p>* required</p>
-          <button type="submit">Register</button>
+          <button>Register</button>
         </Form>
       </Formik>
     </div>
