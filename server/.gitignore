@@ -5,3 +5,4 @@ system/expressionengine/config/config.php
 server/cofig
 .env
 config
+config.json
