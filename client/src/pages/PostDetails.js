@@ -1,6 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import {
+  fetchComments,
+  addComment,
+  deletePost,
+  setNewComment,
+  setError,
+} from "./PostDetailsSlice";
 import { FaRegComment, FaTrash, FaPen, FaRegStar } from "react-icons/fa";
 import { accessToken, prettyDate } from "../helpers/utils";
 import { commentSchema } from "../helpers/commentValidation";
@@ -8,9 +15,10 @@ import { commentSchema } from "../helpers/commentValidation";
 const PostDetails = ({ authState, posts }) => {
   let navigate = useNavigate();
   const { id } = useParams();
-  const [comments, setComments] = useState([]);
-  const [newComment, setNewComment] = useState();
-  const [error, setError] = useState("");
+  const dispatch = useDispatch();
+  const { comments, newComment, error } = useSelector(
+    (state) => state.postDetails
+  );
 
   const post = posts.find((post) => {
     return post.id == id;
@@ -19,71 +27,43 @@ const PostDetails = ({ authState, posts }) => {
     if (!accessToken()) {
       navigate("/login");
     } else {
-      try {
-        axios
-          .get(
-            `https://blog-app-api-production-651f.up.railway.app/comments/${id}`
-          )
-          .then((response) => {
-            setComments(response.data);
-          });
-      } catch (error) {
-        navigate("/error");
-      }
+      dispatch(fetchComments(id));
     }
-  }, []);
+  }, [dispatch, id, handleAddComment]);
 
-  const deletePost = (id) => {
-    axios
-      .delete(
-        `https://blog-app-api-production-651f.up.railway.app/posts/${id}`,
-        {
-          headers: { accessToken: accessToken() },
-        }
-      )
-      .then(() => {
-        navigate("/");
-        navigate(0);
-      });
+  const handleDeletePost = () => {
+    console.log(id, accessToken());
+    dispatch(deletePost(id, accessToken()));
+    navigate("/");
   };
 
-  const addComment = async (e) => {
-    e.preventDefault();
+  const handleAddComment = async () => {
+    try {
+      const obj = {
+        comment: newComment,
+      };
 
-    const obj = {
-      comment: newComment,
-    };
-    const isValid = await commentSchema.isValid(obj);
-    if (!isValid) {
-      setError("post can only contain letters, numbers and - ! . , ? : or )");
-    } else {
-      axios
-        .post(
-          `https://blog-app-api-production-651f.up.railway.app/comments`,
-          {
-            comment: newComment,
-            PostId: id,
-          },
-          {
-            headers: {
-              accessToken: accessToken(),
-            },
-          }
-        )
-        .then((response) => {
-          if (response.data.error) {
-            navigate("/error");
-          } else {
-            const commentToAdd = {
-              comment: newComment,
-              username: response.data.username,
-            };
-            setComments([...comments, commentToAdd]);
-            setNewComment("");
-            setError("");
-          }
-        });
+      // Validate the comment using the commentSchema
+      const isValid = await commentSchema.isValid(obj);
+
+      if (!isValid) {
+        dispatch(setError("Comment is not valid")); // Set the error message in the Redux state
+        return;
+      }
+
+      // Add the comment if it is valid
+
+      await dispatch(addComment(newComment, id, accessToken()));
+      setNewComment(""); // Clear the local state value
+      setError("");
+    } catch (error) {
+      console.log(error);
     }
+  };
+
+  const handleChangeComment = (e) => {
+    dispatch(setNewComment(e.target.value));
+    dispatch(setError(null));
   };
 
   return (
@@ -93,7 +73,7 @@ const PostDetails = ({ authState, posts }) => {
           <Link to={`/details/${id}/edit`}>
             <FaPen className="icon" />
           </Link>
-          <FaTrash className="icon" onClick={() => deletePost(id)} />
+          <FaTrash className="icon" onClick={handleDeletePost} />
         </div>
       )}
       <p>posted by @{post.username}</p>
@@ -120,17 +100,18 @@ const PostDetails = ({ authState, posts }) => {
           type="text"
           maxLength={45}
           minLength={3}
-          onChange={(e) => {
-            setNewComment(e.target.value);
-            setError("");
-          }}
+          onChange={handleChangeComment}
           id="comment"
           name="comment"
           value={newComment}
           placeholder="add comment.."
           required
         />
-        <FaRegComment onClick={addComment} type="submit" className="icon" />
+        <FaRegComment
+          onClick={handleAddComment}
+          type="submit"
+          className="icon"
+        />
       </div>
       <span className="error-msg">{error}</span>
       <Link to="/" className="button cancel">

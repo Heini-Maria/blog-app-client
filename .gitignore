@@ -5,3 +5,4 @@ system/expressionengine/config/database.php
 system/expressionengine/config/config.php
 server/cofig
 .env
+config

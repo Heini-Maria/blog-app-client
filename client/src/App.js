@@ -1,5 +1,7 @@
 import React, { createContext, useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Provider } from "react-redux";
+import store from "../store";
 import axios from "axios";
 import "./style.css";
 import Header from "./Components/Header";
@@ -65,7 +67,7 @@ const App = () => {
 
   useEffect(() => {
     getPosts();
-  /*   const interval = setInterval(() => {
+    /*   const interval = setInterval(() => {
       getPosts();
     }, 5000);
     return () => clearInterval(interval); */
@@ -76,63 +78,65 @@ const App = () => {
   };
 
   return (
-    <AuthContext.Provider value={{ authState, setAuthState }}>
-      <ThemeContext.Provider value={{ theme, setTheme }}>
-        <Router>
-          <div className="background" id={theme}>
-            <Header
-              theme={theme}
-              toggleTheme={toggleTheme}
-              authState={authState}
-              setAuthState={setAuthState}
-            />
-            <Routes>
-              <Route
-                exact
-                path="details/:id/edit"
-                element={<EditPost authState={authState} posts={posts} />}
+    <Provider store={store}>
+      <AuthContext.Provider value={{ authState, setAuthState }}>
+        <ThemeContext.Provider value={{ theme, setTheme }}>
+          <Router>
+            <div className="background" id={theme}>
+              <Header
+                theme={theme}
+                toggleTheme={toggleTheme}
+                authState={authState}
+                setAuthState={setAuthState}
               />
-              <Route
-                exact
-                path="details/:id"
-                element={
-                  <PostDetails
-                    authState={authState}
-                    posts={posts}
-                    likedPosts={likedPosts}
-                  />
-                }
-              />
-              <Route
-                exact
-                path="/post"
-                element={<AddPost authState={authState} />}
-              />
-              <Route exact path="/registration" element={<Registration />} />
-              <Route
-                exact
-                path="/login"
-                element={
-                  <Login authState={authState} setAuthState={setAuthState} />
-                }
-              />
-              <Route exact path="/error" element={<ErrorPage />} />
-              <Route
-                exact
-                path="/"
-                element={
-                  <Home
-                    authState={authState}
-                    posts={posts}
-                    likedPosts={likedPosts}
-                  />
-                }
-              />
-            </Routes>
-          </div>
-        </Router>
-      </ThemeContext.Provider>
-    </AuthContext.Provider>
+              <Routes>
+                <Route
+                  exact
+                  path="details/:id/edit"
+                  element={<EditPost authState={authState} posts={posts} />}
+                />
+                <Route
+                  exact
+                  path="details/:id"
+                  element={
+                    <PostDetails
+                      authState={authState}
+                      posts={posts}
+                      likedPosts={likedPosts}
+                    />
+                  }
+                />
+                <Route
+                  exact
+                  path="/post"
+                  element={<AddPost authState={authState} />}
+                />
+                <Route exact path="/registration" element={<Registration />} />
+                <Route
+                  exact
+                  path="/login"
+                  element={
+                    <Login authState={authState} setAuthState={setAuthState} />
+                  }
+                />
+                <Route exact path="/error" element={<ErrorPage />} />
+                <Route
+                  exact
+                  path="/"
+                  element={
+                    <Home
+                      authState={authState}
+                      posts={posts}
+                      likedPosts={likedPosts}
+                    />
+                  }
+                />
+              </Routes>
+            </div>
+          </Router>
+        </ThemeContext.Provider>
+      </AuthContext.Provider>
+    </Provider>
   );
 };
 

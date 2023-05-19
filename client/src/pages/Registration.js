@@ -1,10 +1,14 @@
 import React from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { userSchema } from "../helpers/userValidation";
+import { registerUser } from "./RegistrationSlice";
 
 const Registration = () => {
+  const dispatch = useDispatch();
+  const loading = useSelector((state) => state.registration.loading);
+  const error = useSelector((state) => state.registration.error);
   let navigate = useNavigate();
   const initialValues = {
     username: "",
@@ -12,16 +16,11 @@ const Registration = () => {
   };
 
   const onSubmit = (data) => {
-    axios
-      .post("https://blog-app-api-production-651f.up.railway.app/auth", data)
-      .then((response) => {
-        console.log(response);
-        if (response.data.error) {
-          alert(response.data.error);
-        }
-        navigate("/login");
-      });
+    dispatch(registerUser(data)).then(() => {
+      navigate("/login");
+    });
   };
+
   return (
     <div className="register">
       <Formik
@@ -46,7 +45,10 @@ const Registration = () => {
             <ErrorMessage name="password" component="span" />
           </span>
           <p>* required</p>
-          <button>Register</button>
+          <button type="submit" disabled={loading}>
+            {loading ? "Registering..." : "Register"}
+          </button>
+          {error && <span className="error-msg">{error}</span>}
         </Form>
       </Formik>
     </div>
