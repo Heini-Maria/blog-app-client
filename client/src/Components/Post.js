@@ -1,44 +1,26 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaStar, FaRegStar, FaRegComment } from "react-icons/fa";
-import { prettyDate, accessToken} from "../helpers/utils";
-import axios from "axios";
+import { prettyDate, accessToken } from "../helpers/utils";
+import { updatePostLike } from "../pages/PostsSlice";
+import { useDispatch } from "react-redux";
 
-const Post = ({ post, likedPosts }) => {
+const Post = ({ post }) => {
   let navigate = useNavigate();
-  const [thisPost, setThisPost] = useState(post);
-  const [thisLiked, setThisLiked] = useState(likedPosts);
+  const [isLiked, setIsLiked] = useState(post.liked);
+  const [likesCount, setLikesCount] = useState(post.Likes.length);
+  const dispatch = useDispatch();
 
-  const likeAPost = (postId) => {
-    axios
-      .post(
-        `https://blog-app-api-production-651f.up.railway.app/likes`,
-        { PostId: postId },
-        {
-          headers: {
-            accessToken: accessToken(),
-          },
-        }
-      )
-      .then((response) => {
-        if (response.data.like) {
-          setThisPost({ ...thisPost, Likes: [...thisPost.Likes, 0] });
-        } else {
-          const likeArray = thisPost.Likes;
-          likeArray.pop();
-          setThisPost({ ...thisPost, Likes: likeArray });
-        }
-        if (thisLiked.includes(post.id)) {
-          setThisLiked(
-            likedPosts.filter((id) => {
-              return id != post.id;
-            })
-          );
-        } else {
-          setThisLiked([...likedPosts, post.id]);
-        }
-      });
+  const likeAPost = async (postId) => {
+    try {
+      await dispatch(updatePostLike({ postId, accessToken: accessToken() }));
+      setIsLiked(!isLiked);
+      setLikesCount((prevCount) => (isLiked ? prevCount - 1 : prevCount + 1));
+    } catch (error) {
+      console.log("Error occurred while updating post like:", error);
+    }
   };
+
   return (
     <div className="post">
       <p>@{post.username}</p>
@@ -47,33 +29,28 @@ const Post = ({ post, likedPosts }) => {
       <p>{post.post}</p>
       <div className="stats">
         <div className="stats-icons">
-          {thisLiked.includes(post.id) ? (
+          {isLiked ? (
             <p>
-              <FaStar
-                className="liked"
-                onClick={() => {
-                  likeAPost(post.id);
-                }}
-              />
-              {thisPost.Likes.length}
+              <FaStar className="liked" onClick={() => likeAPost(post.id)} />
+              {likesCount}
             </p>
           ) : (
             <p>
               <FaRegStar
                 className="unliked"
-                onClick={() => {
-                  likeAPost(post.id);
-                }}
+                onClick={() => likeAPost(post.id)}
               />
-              {thisPost.Likes.length}
+              {likesCount}
             </p>
           )}
           <p>
             <FaRegComment
-              onClick={() =>  {navigate(`details/${post.id}`)}}
+              onClick={() => {
+                navigate(`details/${post.id}`);
+              }}
               className="post-comments"
             />
-            {thisPost.Comments.length}
+            {post.Comments.length}
           </p>
         </div>
         <Link to={`/details/${post.id}`} className="button">

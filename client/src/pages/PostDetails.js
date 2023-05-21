@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import {
+  fetchPost,
   fetchComments,
   addComment,
   deletePost,
@@ -12,27 +13,28 @@ import { FaRegComment, FaTrash, FaPen, FaRegStar } from "react-icons/fa";
 import { accessToken, prettyDate } from "../helpers/utils";
 import { commentSchema } from "../helpers/commentValidation";
 
-const PostDetails = ({ authState, posts }) => {
+const PostDetails = ({ authState }) => {
   let navigate = useNavigate();
   const { id } = useParams();
   const dispatch = useDispatch();
-  const { comments, newComment, error } = useSelector(
+  const { post, comments, newComment, error } = useSelector(
     (state) => state.postDetails
   );
 
-  const post = posts.find((post) => {
-    return post.id == id;
-  });
   useEffect(() => {
     if (!accessToken()) {
       navigate("/login");
     } else {
+      dispatch(fetchPost({ postId: id, accessToken: accessToken() }));
       dispatch(fetchComments(id));
     }
   }, [dispatch, id, handleAddComment]);
 
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   const handleDeletePost = () => {
-    console.log(id, accessToken());
     dispatch(deletePost(id, accessToken()));
     navigate("/");
   };
@@ -42,19 +44,15 @@ const PostDetails = ({ authState, posts }) => {
       const obj = {
         comment: newComment,
       };
-
-      // Validate the comment using the commentSchema
       const isValid = await commentSchema.isValid(obj);
 
       if (!isValid) {
-        dispatch(setError("Comment is not valid")); // Set the error message in the Redux state
+        dispatch(setError("Comment is not valid"));
         return;
       }
 
-      // Add the comment if it is valid
-
       await dispatch(addComment(newComment, id, accessToken()));
-      setNewComment(""); // Clear the local state value
+      setNewComment("");
       setError("");
     } catch (error) {
       console.log(error);
@@ -82,7 +80,7 @@ const PostDetails = ({ authState, posts }) => {
       <p>{post.post}</p>
       <div className="likes">
         <FaRegStar />
-        {post.Likes.length}
+        {post?.Likes?.length}
       </div>
       <h3>{comments.length} comments:</h3>
       <ul>

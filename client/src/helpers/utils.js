@@ -1,5 +1,9 @@
 export function prettyDate(date) {
-  let dateModify = date.toString().substr(0, 10);
+  if (!date) {
+    return "";
+  }
+
+  let dateModify = new Date(date).toISOString().substr(0, 10);
   let result =
     dateModify.slice(8, 10) +
     "/" +
@@ -20,7 +24,7 @@ export const accessToken = () => {
 };
 
 export const unescape = (string) => {
- string = string.replace(/&quot;/g, "\"");
- string = string.replace(/#39;/g, "'");
- return string;
-}
+  string = string.replace(/&quot;/g, '"');
+  string = string.replace(/#39;/g, "'");
+  return string;
+};

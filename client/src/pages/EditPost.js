@@ -1,59 +1,43 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { postSchema } from "../helpers/postValidation";
+import { useSelector, useDispatch } from "react-redux";
 import { accessToken } from "../helpers/utils";
-import axios from "axios";
+import { fetchPost, editPost } from "./PostDetailsSlice";
 import FormFields from "../Components/FormFields";
 
 const EditPost = () => {
   let navigate = useNavigate();
   const { id } = useParams();
-  const [post, setPost] = useState({});
+  const dispatch = useDispatch();
+  const post = useSelector((state) => state.postDetails.post);
   const [error, setError] = useState("");
 
   useEffect(() => {
     if (!accessToken()) {
       navigate("/login");
     } else {
-      axios
-        .get(`https://blog-app-api-production-651f.up.railway.app/posts/byId/${id}`, {
-          headers: { accessToken: accessToken() },
-        })
-        .then((response) => {
-          setPost(response.data);
-        });
+      dispatch(fetchPost({ postId: id, accessToken: accessToken() }));
     }
-  }, []);
-  const editPost = async (e) => {
+  }, [dispatch, id, accessToken]);
+
+  const handleEdit = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-    const obj = {
-      title: formData.get("title") ?? "",
-      post: formData.get("postText") ?? "",
-    };
-    const isValid = await postSchema.isValid(obj);
-    if (!isValid) {
-      setError("post can only contain letters, numbers and - ! . , ? : or )");
-    } else {
-      axios
-        .put(`https://blog-app-api-production-651f.up.railway.app/posts/${id}`, obj, {
-          headers: { accessToken: accessToken() },
-        })
-        .then((response) => {
-          if (response.data.error) {
-            navigate("/error");
-          } else {
-            navigate(`/details/${id}`);
-          }
-        });
-      setError("");
-    }
+    dispatch(editPost({ id, formData, accessToken: accessToken() }))
+      .unwrap()
+      .then(() => {
+        navigate(`/details/${id}`);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
+ 
   return (
     <div className="new-post-view">
       <h2>Edit Post</h2>
-      <form action="" onSubmit={editPost}>
-        <FormFields post={post} error={error} setError={setError}/>
+      <form action="" onSubmit={handleEdit}>
+        <FormFields post={post} error={error} setError={setError} />
       </form>
     </div>
   );

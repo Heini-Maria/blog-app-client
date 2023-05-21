@@ -5,7 +5,7 @@ import store from "../store";
 import axios from "axios";
 import "./style.css";
 import Header from "./Components/Header";
-import Home from "./pages/Home";
+import Posts from "./pages/Posts";
 import AddPost from "./pages/AddPost";
 import PostDetails from "./pages/PostDetails";
 import EditPost from "./pages/EditPost";
@@ -20,31 +20,12 @@ export const AuthContext = createContext("");
 
 const App = () => {
   const [theme, setTheme] = useState("light");
-  const [posts, setPosts] = useState([]);
-  const [likedPosts, setLikedPosts] = useState([]);
   const [authState, setAuthState] = useState({
     username: "",
     id: 0,
     status: false,
   });
 
-  const getPosts = () => {
-    axios
-      .get(`https://blog-app-api-production-651f.up.railway.app/posts`, {
-        headers: { accessToken: accessToken() },
-      })
-      .then((response) => {
-        if (response.status !== 200) {
-          alert("Something went wrong. Please try again!");
-        }
-        setPosts(response.data.listOfPosts);
-        setLikedPosts(
-          response.data.likedPosts.map((like) => {
-            return like.PostId;
-          })
-        );
-      });
-  };
   useEffect(() => {
     axios
       .get("https://blog-app-api-production-651f.up.railway.app/auth/auth", {
@@ -63,14 +44,6 @@ const App = () => {
           });
         }
       });
-  }, []);
-
-  useEffect(() => {
-    getPosts();
-    /*   const interval = setInterval(() => {
-      getPosts();
-    }, 5000);
-    return () => clearInterval(interval); */
   }, []);
 
   const toggleTheme = () => {
@@ -93,18 +66,12 @@ const App = () => {
                 <Route
                   exact
                   path="details/:id/edit"
-                  element={<EditPost authState={authState} posts={posts} />}
+                  element={<EditPost authState={authState} />}
                 />
                 <Route
                   exact
                   path="details/:id"
-                  element={
-                    <PostDetails
-                      authState={authState}
-                      posts={posts}
-                      likedPosts={likedPosts}
-                    />
-                  }
+                  element={<PostDetails authState={authState} />}
                 />
                 <Route
                   exact
@@ -123,13 +90,7 @@ const App = () => {
                 <Route
                   exact
                   path="/"
-                  element={
-                    <Home
-                      authState={authState}
-                      posts={posts}
-                      likedPosts={likedPosts}
-                    />
-                  }
+                  element={<Posts authState={authState} />}
                 />
               </Routes>
             </div>

@@ -1,12 +1,12 @@
 import { combineReducers } from "redux";
 import registrationReducer from "./src/pages/RegistrationSlice";
 import postDetailsReducer from "./src/pages/PostDetailsSlice";
-// Import other reducers as needed
+import postsReducer from "./src/pages/PostsSlice";
 
 const rootReducer = combineReducers({
   registration: registrationReducer,
+  posts: postsReducer,
   postDetails: postDetailsReducer,
-  // Add other reducers here
 });
 
 export default rootReducer;
