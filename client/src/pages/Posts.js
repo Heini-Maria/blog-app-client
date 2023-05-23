@@ -5,7 +5,7 @@ import Post from "../Components/Post";
 import { accessToken } from "../helpers/utils";
 import { useSelector, useDispatch } from "react-redux";
 
-const Posts = ({ likedPosts, authState }) => {
+const Posts = () => {
   let navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
@@ -34,8 +34,6 @@ const Posts = ({ likedPosts, authState }) => {
           <Post
             post={post}
             key={key}
-            likedPosts={likedPosts}
-            authState={authState}
           />
         );
       })}

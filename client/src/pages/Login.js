@@ -1,29 +1,29 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { loginUser } from "./LoginSlice";
 
 const Login = ({ setAuthState }) => {
+  const dispatch = useDispatch();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   let navigate = useNavigate();
 
-  const login = () => {
-    const data = { username: username, password: password };
-    axios.post("https://blog-app-api-production-651f.up.railway.app/auth/login", data).then((response) => {
-      if (response.data.error) {
-        alert(response.data.error);
-      } else {
-        localStorage.setItem("accessToken", response.data.token);
-        setAuthState({
-          username: response.data.username,
-          id: response.data.id,
-          status: true,
-        });
-        navigate("/");
-        navigate(0);
-      }
-    });
+  const handleLogin = async () => {
+    const userData = { username: username, password: password };
+    try {
+      const response = await dispatch(loginUser(userData));
+      setAuthState({
+        username: response.payload.username,
+        id: response.payload.id,
+        status: true,
+      });
+      navigate("/");
+    } catch (error) {
+      console.log("Login error:", error);
+    }
   };
+
   return (
     <div className="login">
       <div className="form">
@@ -45,7 +45,7 @@ const Login = ({ setAuthState }) => {
             setPassword(e.target.value);
           }}
         />
-        <button onClick={login} type="submit">
+        <button onClick={handleLogin} type="submit">
           Login
         </button>
       </div>

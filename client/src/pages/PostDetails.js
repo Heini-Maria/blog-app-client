@@ -34,8 +34,8 @@ const PostDetails = ({ authState }) => {
     return <div>Error: {error}</div>;
   }
 
-  const handleDeletePost = () => {
-    dispatch(deletePost(id, accessToken()));
+  const handleDeletePost = async () => {
+    await dispatch(deletePost(id, accessToken()));
     navigate("/");
   };
 

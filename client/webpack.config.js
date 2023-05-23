@@ -1,6 +1,7 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const { WebpackManifestPlugin } = require("webpack-manifest-plugin");
 
 module.exports = {
   entry: "./src/index.js",
@@ -28,6 +29,10 @@ module.exports = {
       filename: "index.html",
       template: path.resolve(__dirname, "src", "index.html"),
       favicon: "./assets/images/favicon.ico",
+    }),
+    new WebpackManifestPlugin({
+      writeToFileEmit: true,
+      seed: {},
     }),
   ],
   resolve: {

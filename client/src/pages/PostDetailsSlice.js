@@ -156,4 +156,18 @@ export const deletePost = (id, accessToken) => async (dispatch) => {
   }
 };
 
+export const addPost = (post, accessToken) => async (dispatch) => {
+  try {
+    await axios.post(
+      `https://blog-app-api-production-651f.up.railway.app/posts`,
+      post,
+      {
+        headers: { accessToken: accessToken },
+      }
+    );
+  } catch (error) {
+    dispatch(setError(error.message));
+  }
+};
+
 export default postDetailsSlice.reducer;

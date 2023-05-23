@@ -2,7 +2,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
-const Header = ({ toggleTheme, theme, authState, setAuthState }) => {
+const Header = ({ theme, authState, setAuthState, toggleTheme }) => {
   let navigate = useNavigate();
 
   const logout = () => {
@@ -13,7 +13,6 @@ const Header = ({ toggleTheme, theme, authState, setAuthState }) => {
       status: false,
     });
     navigate("/");
-    navigate(0);
   };
 
   return (

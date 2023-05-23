@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { accessToken } from "../helpers/utils";
-import { fetchPost, editPost } from "./PostDetailsSlice";
-import FormFields from "../Components/FormFields";
+import { fetchPost, editPost } from "../pages/PostDetailsSlice";
+import FormFields from "./FormFields";
 
 const EditPost = () => {
   let navigate = useNavigate();

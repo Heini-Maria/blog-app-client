@@ -13,11 +13,6 @@ export function prettyDate(date) {
   return result;
 }
 
-export function shortDate(date) {
-  let result = date.toString().slice(0, 10);
-  return result;
-}
-
 export const accessToken = () => {
   let accessToken = localStorage.getItem("accessToken");
   return accessToken;

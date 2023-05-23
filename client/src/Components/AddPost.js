@@ -1,11 +1,13 @@
 import React, { useEffect } from "react";
-import axios from "axios";
+import { useDispatch } from "react-redux";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useNavigate, Link } from "react-router-dom";
 import { accessToken } from "../helpers/utils";
 import { postSchema } from "../helpers/postValidation";
+import { addPost } from "../pages/PostDetailsSlice";
 
 const AddPost = () => {
+  const dispatch = useDispatch();
   let navigate = useNavigate();
   const initialValues = {
     title: "",
@@ -18,19 +20,9 @@ const AddPost = () => {
     }
   }, []);
 
-  const addPost = (obj) => {
-    axios
-      .post(`https://blog-app-api-production-651f.up.railway.app/posts`, obj, {
-        headers: { accessToken: accessToken() },
-      })
-      .then((response) => {
-        if (response.data.error) {
-          navigate("/error");
-        } else {
-          navigate("/");
-          navigate(0);
-        }
-      });
+  const handleAddPost = async (obj) => {
+    await dispatch(addPost(obj, accessToken()));
+    navigate("/");
   };
 
   return (
@@ -39,7 +31,7 @@ const AddPost = () => {
       <Formik
         initialValues={initialValues}
         validationSchema={postSchema}
-        onSubmit={addPost}
+        onSubmit={handleAddPost}
       >
         <Form className="form">
           <label htmlFor="title">*Title: </label>
