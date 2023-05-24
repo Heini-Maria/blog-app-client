@@ -1,6 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import "./style.css";
 import axios from "axios";
 import Header from "./Components/Header";
@@ -18,7 +17,6 @@ export const ThemeContext = createContext(null);
 export const AuthContext = createContext("");
 
 const App = () => {
-  const dispatch = useDispatch();
   const [theme, setTheme] = useState("light");
   const [authState, setAuthState] = useState({
     username: "",
@@ -27,25 +25,27 @@ const App = () => {
   });
 
   useEffect(() => {
-    axios
-      .get("https://blog-app-api-production-651f.up.railway.app/auth/auth", {
-        headers: {
-          accessToken: accessToken(),
-        },
-      })
-      .then((response) => {
+    const authCheck = async () => {
+      try {
+        const response = await axios.get(
+          "https://blog-app-api-production-651f.up.railway.app/auth/auth",
+          {
+            headers: {
+              accessToken: accessToken(),
+            },
+          }
+        );
         if (response.data.error) {
-          dispatch(setAuthState({ ...authState, status: false }));
+          setAuthState({ ...authState, status: false });
         } else {
-          dispatch(
-            setAuthState({
-              username: response.data.username,
-              id: response.data.id,
-              status: true,
-            })
-          );
+          const { username, id } = response.data;
+          setAuthState({ username: username, id: id, status: true });
         }
-      });
+      } catch (error) {
+        console.log("Error occurred while checking authentication:", error);
+      }
+    };
+    authCheck();
   }, []);
 
   const toggleTheme = () => {
@@ -71,7 +71,11 @@ const App = () => {
                 path="details/:id"
                 element={<PostDetails authState={authState} />}
               />
-              <Route exact path="/post" element={<AddPost />} />
+              <Route
+                exact
+                path="/post"
+                element={<AddPost authState={authState} />}
+              />
               <Route exact path="/registration" element={<Registration />} />
               <Route
                 exact
@@ -79,7 +83,7 @@ const App = () => {
                 element={<Login setAuthState={setAuthState} />}
               />
               <Route exact path="/error" element={<ErrorPage />} />
-              <Route exact path="/" element={<Posts />} />
+              <Route exact path="/" element={<Posts authState={authState} />} />
             </Routes>
           </div>
         </Router>

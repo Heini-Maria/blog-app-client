@@ -4,12 +4,13 @@ import { fetchPosts } from "./PostsSlice";
 import Post from "../Components/Post";
 import { accessToken } from "../helpers/utils";
 import { useSelector, useDispatch } from "react-redux";
+import LoadingAnimation from "../helpers/LoadingAnimation";
 
-const Posts = () => {
+const Posts = ({ authState }) => {
   let navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
-  const { posts, error, loading } = useSelector((state) => state.posts);
+  const { posts, loading } = useSelector((state) => state.posts);
 
   useEffect(() => {
     if (!accessToken()) {
@@ -20,11 +21,7 @@ const Posts = () => {
   }, [dispatch, accessToken, location]);
 
   if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
+    return <LoadingAnimation />;
   }
 
   return (
@@ -34,6 +31,8 @@ const Posts = () => {
           <Post
             post={post}
             key={key}
+            likes={post.Likes}
+            authState={authState}
           />
         );
       })}

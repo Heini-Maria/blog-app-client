@@ -199,10 +199,16 @@ input:checked + .slider:before {
 }
 /* ------home---------- */
 .home {
-  /* background-color: var(--secondary-color); */
   min-height: 100vh;
   color: var(--text-color);
   padding: 4rem;
+}
+.loading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: 100vh;
+  margin-top: 100px;
 }
 /* -----post ----------- */
 .post {

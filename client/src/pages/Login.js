@@ -13,14 +13,15 @@ const Login = ({ setAuthState }) => {
     const userData = { username: username, password: password };
     try {
       const response = await dispatch(loginUser(userData));
+      const { username, id } = response.payload;
       setAuthState({
-        username: response.payload.username,
-        id: response.payload.id,
+        username: username,
+        id: id,
         status: true,
       });
       navigate("/");
     } catch (error) {
-      console.log("Login error:", error);
+      console.log(error);
     }
   };
 

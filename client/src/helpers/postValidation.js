@@ -14,7 +14,7 @@ export const postSchema = Yup.object().shape({
     .max(300)
     .matches(
       "^[.a-zA-Z0-9-! ) , ( : ? ]*$",
-      "title can only contain letters, numbers and - ! . , ? : or )."
+      "post can only contain letters, numbers and - ! . , ? : or )."
     )
     .required(),
 });

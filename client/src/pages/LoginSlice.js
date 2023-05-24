@@ -14,6 +14,10 @@ export const loginUser = createAsyncThunk(
         "https://blog-app-api-production-651f.up.railway.app/auth/login",
         userData
       );
+      if (response.data.error) {
+        alert(response.data.error);
+        return;
+      }
       localStorage.setItem("accessToken", response.data.token);
       return response.data;
     } catch (error) {

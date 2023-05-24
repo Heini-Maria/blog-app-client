@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { postSchema } from "../helpers/postValidation";
 
 const initialState = {
   post: {},
@@ -8,6 +7,20 @@ const initialState = {
   newComment: "",
   error: "",
 };
+
+export const fetchComments = createAsyncThunk(
+  "postDetails/fetchComments",
+  async (postId, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(
+        `https://blog-app-api-production-651f.up.railway.app/comments/${postId}`
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
 
 export const fetchPost = createAsyncThunk(
   "postDetails/fetchPost",
@@ -30,30 +43,19 @@ export const fetchPost = createAsyncThunk(
 
 export const editPost = createAsyncThunk(
   "postDetails/editPost",
-  async ({ id, formData, accessToken }, { rejectWithValue }) => {
+  async ({ id, obj, accessToken }, { rejectWithValue }) => {
     try {
-      const obj = {
-        title: formData.get("title") ?? "",
-        post: formData.get("postText") ?? "",
-      };
-      const isValid = await postSchema.isValid(obj);
-      if (!isValid) {
-        throw new Error(
-          "Post can only contain letters, numbers, and special characters"
-        );
-      } else {
-        const response = await axios.put(
-          `https://blog-app-api-production-651f.up.railway.app/posts/${id}`,
-          obj,
-          {
-            headers: { accessToken },
-          }
-        );
-        if (response.data.error) {
-          throw new Error("An error occurred while updating the post");
-        } else {
-          return response.data;
+      const response = await axios.put(
+        `https://blog-app-api-production-651f.up.railway.app/posts/${id}`,
+        obj,
+        {
+          headers: { accessToken },
         }
+      );
+      if (response.data.error) {
+        throw new Error("An error occurred while updating the post");
+      } else {
+        return response.data;
       }
     } catch (error) {
       return rejectWithValue(error.message);
@@ -101,20 +103,6 @@ const postDetailsSlice = createSlice({
 
 export const { setComments, setNewComment, setError } =
   postDetailsSlice.actions;
-
-export const fetchComments = createAsyncThunk(
-  "postDetails/fetchComments",
-  async (postId, { rejectWithValue }) => {
-    try {
-      const response = await axios.get(
-        `https://blog-app-api-production-651f.up.railway.app/comments/${postId}`
-      );
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
-  }
-);
 
 export const addComment =
   (comment, postId, accessToken) => async (dispatch, getState) => {

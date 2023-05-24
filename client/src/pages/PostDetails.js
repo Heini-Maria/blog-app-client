@@ -30,10 +30,6 @@ const PostDetails = ({ authState }) => {
     }
   }, [dispatch, id, handleAddComment]);
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
   const handleDeletePost = async () => {
     await dispatch(deletePost(id, accessToken()));
     navigate("/");
@@ -47,7 +43,11 @@ const PostDetails = ({ authState }) => {
       const isValid = await commentSchema.isValid(obj);
 
       if (!isValid) {
-        dispatch(setError("Comment is not valid"));
+        dispatch(
+          setError(
+            "post can only contain letters, numbers and - ! . , ? : or )"
+          )
+        );
         return;
       }
 

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { accessToken } from "../helpers/utils";
 import { fetchPost, editPost } from "../pages/PostDetailsSlice";
+import { postSchema } from "../helpers/postValidation";
 import FormFields from "./FormFields";
 
 const EditPost = () => {
@@ -20,23 +21,31 @@ const EditPost = () => {
     }
   }, [dispatch, id, accessToken]);
 
-  const handleEdit = (e) => {
+  const handleEdit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-    dispatch(editPost({ id, formData, accessToken: accessToken() }))
-      .unwrap()
-      .then(() => {
-        navigate(`/details/${id}`);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    const obj = {
+      title: formData.get("title") ?? "",
+      post: formData.get("postText") ?? "",
+    };
+    const isValid = await postSchema.isValid(obj);
+    console.log(isValid);
+    if (!isValid) {
+      setError("post can only contain letters, numbers and - ! . , ? : or )");
+      return;
+    } else {
+      dispatch(editPost({ id, obj, accessToken: accessToken() }))
+        .unwrap()
+        .then(() => {
+          navigate(`/details/${id}`);
+        });
+    }
   };
- 
+
   return (
     <div className="new-post-view">
       <h2>Edit Post</h2>
-      <form action="" onSubmit={handleEdit}>
+      <form action="" onSubmit={handleEdit} onChange={handleEdit}>
         <FormFields post={post} error={error} setError={setError} />
       </form>
     </div>
