@@ -29,7 +29,6 @@ const EditPost = () => {
       post: formData.get("postText") ?? "",
     };
     const isValid = await postSchema.isValid(obj);
-    console.log(isValid);
     if (!isValid) {
       setError("post can only contain letters, numbers and - ! . , ? : or )");
       return;
