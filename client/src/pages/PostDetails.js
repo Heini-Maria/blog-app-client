@@ -41,7 +41,6 @@ const PostDetails = ({ authState }) => {
         comment: newComment,
       };
       const isValid = await commentSchema.isValid(obj);
-
       if (!isValid) {
         dispatch(
           setError(
@@ -50,7 +49,6 @@ const PostDetails = ({ authState }) => {
         );
         return;
       }
-
       await dispatch(addComment(newComment, id, accessToken()));
       setNewComment("");
       setError("");
@@ -58,7 +56,6 @@ const PostDetails = ({ authState }) => {
       console.log(error);
     }
   };
-
   const handleChangeComment = (e) => {
     dispatch(setNewComment(e.target.value));
     dispatch(setError(null));

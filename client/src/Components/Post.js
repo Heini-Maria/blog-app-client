@@ -25,7 +25,7 @@ const Post = ({ post, likes, authState }) => {
       setIsLiked((prevIsLiked) => !prevIsLiked);
       setLikesCount((prevCount) => (isLiked ? prevCount - 1 : prevCount + 1));
     } catch (error) {
-      console.log("Error occurred while updating post like:", error);
+      console.log(error);
     }
   };
 

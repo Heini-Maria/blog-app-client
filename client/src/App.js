@@ -42,7 +42,7 @@ const App = () => {
           setAuthState({ username: username, id: id, status: true });
         }
       } catch (error) {
-        console.log("Error occurred while checking authentication:", error);
+        console.log(error);
       }
     };
     authCheck();

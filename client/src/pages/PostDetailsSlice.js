@@ -52,11 +52,7 @@ export const editPost = createAsyncThunk(
           headers: { accessToken },
         }
       );
-      if (response.data.error) {
-        throw new Error("An error occurred while updating the post");
-      } else {
-        return response.data;
-      }
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.message);
     }
