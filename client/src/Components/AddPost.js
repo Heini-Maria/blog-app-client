@@ -4,7 +4,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useNavigate, Link } from "react-router-dom";
 import { accessToken } from "../helpers/utils";
 import { postSchema } from "../helpers/postValidation";
-import { addPost } from "../pages/PostDetailsSlice";
+import { addPost } from "../pages/PostsSlice";
 
 const AddPost = () => {
   const dispatch = useDispatch();

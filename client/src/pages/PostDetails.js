@@ -5,10 +5,10 @@ import {
   fetchPost,
   fetchComments,
   addComment,
-  deletePost,
   setNewComment,
   setError,
 } from "./PostDetailsSlice";
+import { deletePost } from "./PostsSlice";
 import { FaRegComment, FaTrash, FaPen, FaRegStar } from "react-icons/fa";
 import { accessToken, prettyDate } from "../helpers/utils";
 import { commentSchema } from "../helpers/commentValidation";

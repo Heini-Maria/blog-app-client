@@ -9,7 +9,6 @@ import LoadingAnimation from "../helpers/LoadingAnimation";
 const Posts = () => {
   let navigate = useNavigate();
   const dispatch = useDispatch();
-  const location = useLocation();
   const { posts, loading } = useSelector((state) => state.posts);
 
   useEffect(() => {
@@ -18,7 +17,7 @@ const Posts = () => {
     } else {
       dispatch(fetchPosts(accessToken()));
     }
-  }, [dispatch, accessToken, location]);
+  }, [dispatch, accessToken]);
 
   if (loading) {
     return <LoadingAnimation />;
