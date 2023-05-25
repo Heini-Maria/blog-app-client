@@ -20,7 +20,7 @@ const Post = ({ post, likes }) => {
 
   const likeAPost = async (postId) => {
     try {
-      await dispatch(updatePostLike({ postId, accessToken: accessToken() }));
+      await dispatch(updatePostLike(postId, accessToken()));
       setIsLiked((prevIsLiked) => !prevIsLiked);
       setLikesCount((prevCount) => (isLiked ? prevCount - 1 : prevCount + 1));
     } catch (error) {

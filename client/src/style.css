@@ -87,6 +87,7 @@ label {
   font-size: 1.2rem;
   padding: 1rem 0;
 }
+
 ul > li {
   list-style: none;
 }
@@ -370,6 +371,13 @@ input,
 .login button {
   width: 15%;
   margin-top: 2rem;
+}
+.login a {
+  color: var(--text-color);
+  font-weight: bold;
+}
+.login a:hover {
+  color: var(--accent-color)
 }
 .error {
   padding-top: 10rem;
