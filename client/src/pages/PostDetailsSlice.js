@@ -5,57 +5,46 @@ const initialState = {
   post: {},
   comments: [],
   newComment: "",
+  loading: false,
   error: "",
 };
 
-export const fetchComments = createAsyncThunk(
-  "postDetails/fetchComments",
-  async (postId, { rejectWithValue }) => {
-    try {
-      const response = await axios.get(
-        `https://blog-app-api-production-651f.up.railway.app/comments/${postId}`
-      );
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
+export const fetchPost = createAsyncThunk(
+  "postDetails/fetchPost",
+  async ({ postId, accessToken }) => {
+    const response = await axios.get(
+      `https://blog-app-api-production-651f.up.railway.app/posts/byId/${postId}`,
+      {
+        headers: {
+          accessToken: accessToken,
+        },
+      }
+    );
+    return response.data;
   }
 );
 
-export const fetchPost = createAsyncThunk(
-  "postDetails/fetchPost",
-  async ({ postId, accessToken }, { rejectWithValue }) => {
-    try {
-      const response = await axios.get(
-        `https://blog-app-api-production-651f.up.railway.app/posts/byId/${postId}`,
-        {
-          headers: {
-            accessToken: accessToken,
-          },
-        }
-      );
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
+export const fetchComments = createAsyncThunk(
+  "postDetails/fetchComments",
+  async (postId) => {
+    const response = await axios.get(
+      `https://blog-app-api-production-651f.up.railway.app/comments/${postId}`
+    );
+    return response.data;
   }
 );
 
 export const editPost = createAsyncThunk(
   "postDetails/editPost",
-  async ({ id, obj, accessToken }, { rejectWithValue }) => {
-    try {
-      const response = await axios.put(
-        `https://blog-app-api-production-651f.up.railway.app/posts/${id}`,
-        obj,
-        {
-          headers: { accessToken },
-        }
-      );
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
+  async ({ id, obj, accessToken }) => {
+    const response = await axios.put(
+      `https://blog-app-api-production-651f.up.railway.app/posts/${id}`,
+      obj,
+      {
+        headers: { accessToken },
+      }
+    );
+    return response.data;
   }
 );
 
@@ -68,7 +57,6 @@ const postDetailsSlice = createSlice({
     },
     setNewComment: (state, action) => {
       state.newComment = action.payload;
-      state.error = "";
     },
     setError: (state, action) => {
       state.error = action.payload;
@@ -77,15 +65,22 @@ const postDetailsSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchComments.fulfilled, (state, action) => {
       state.comments = action.payload;
+      state.error = "";
     });
     builder.addCase(fetchComments.rejected, (state, action) => {
       state.error = action.payload;
     });
+    builder.addCase(fetchPost.pending, (state) => {
+      state.loading = true;
+    });
     builder.addCase(fetchPost.fulfilled, (state, action) => {
       state.post = action.payload;
+      state.loading = false;
+      state.error = "";
     });
     builder.addCase(fetchPost.rejected, (state, action) => {
       state.error = action.payload;
+      state.loading = false;
     });
     builder.addCase(editPost.fulfilled, (state, action) => {
       state.post = action.payload;
@@ -116,14 +111,13 @@ export const addComment =
         }
       );
       dispatch(setNewComment(""));
-      dispatch(setError(null));
       const updatedComments = [
         ...getState().postDetails.comments,
         response.data,
       ];
       dispatch(setComments(updatedComments));
     } catch (error) {
-      console.log(error);
+      dispatch(setError(error.message));
     }
   };
 

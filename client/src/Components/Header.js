@@ -1,18 +1,32 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { setAuthState, setTheme } from "../AppSlice";
+import { useDispatch, useSelector } from "react-redux";
 
-const Header = ({ theme, authState, setAuthState, toggleTheme }) => {
+const Header = () => {
   let navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { theme, authState } = useSelector((state) => state.app);
 
   const logout = () => {
     localStorage.removeItem("accessToken");
-    setAuthState({
-      username: "",
-      id: 0,
-      status: false,
-    });
+    dispatch(
+      setAuthState({
+        username: "",
+        id: 0,
+        status: false,
+      })
+    );
     navigate("/");
+  };
+
+  const toggleTheme = () => {
+    if (theme === "light") {
+      dispatch(setTheme("dark"));
+    } else {
+      dispatch(setTheme("light"));
+    }
   };
 
   return (

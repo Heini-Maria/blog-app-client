@@ -8,21 +8,17 @@ const initialState = {
 
 export const loginUser = createAsyncThunk(
   "login/loginUser",
-  async (userData, { rejectWithValue }) => {
-    try {
-      const response = await axios.post(
-        "https://blog-app-api-production-651f.up.railway.app/auth/login",
-        userData
-      );
-      if (response.data.error) {
-        alert(response.data.error);
-        return;
-      }
-      localStorage.setItem("accessToken", response.data.token);
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response.data);
+  async (userData) => {
+    const response = await axios.post(
+      "https://blog-app-api-production-651f.up.railway.app/auth/login",
+      userData
+    );
+    if (response.data.error) {
+      alert(response.data.error);
+      return;
     }
+    localStorage.setItem("accessToken", response.data.token);
+    return response.data;
   }
 );
 

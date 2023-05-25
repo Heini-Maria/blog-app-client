@@ -8,16 +8,13 @@ const initialState = {
 
 export const registerUser = createAsyncThunk(
   "registration/registerUser",
-  async (userData, { rejectWithValue }) => {
-    try {
+  async (userData) => {
+
       const response = await axios.post(
         "https://blog-app-api-production-651f.up.railway.app/auth",
         userData
       );
       return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response.data);
-    }
   }
 );
 

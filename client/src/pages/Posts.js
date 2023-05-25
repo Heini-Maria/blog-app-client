@@ -6,7 +6,7 @@ import { accessToken } from "../helpers/utils";
 import { useSelector, useDispatch } from "react-redux";
 import LoadingAnimation from "../helpers/LoadingAnimation";
 
-const Posts = ({ authState }) => {
+const Posts = () => {
   let navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
@@ -27,14 +27,7 @@ const Posts = ({ authState }) => {
   return (
     <div className="home">
       {posts.map((post, key) => {
-        return (
-          <Post
-            post={post}
-            key={key}
-            likes={post.Likes}
-            authState={authState}
-          />
-        );
+        return <Post post={post} key={key} likes={post.Likes} />;
       })}
     </div>
   );

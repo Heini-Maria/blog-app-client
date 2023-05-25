@@ -1,12 +1,14 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setAuthState } from "../AppSlice";
 import { Link, useNavigate } from "react-router-dom";
 import { loginUser } from "./LoginSlice";
 
-const Login = ({ setAuthState }) => {
+const Login = () => {
   const dispatch = useDispatch();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const loading = useSelector((state) => state.login.loading);
   let navigate = useNavigate();
 
   const handleLogin = async () => {
@@ -14,11 +16,13 @@ const Login = ({ setAuthState }) => {
     try {
       const response = await dispatch(loginUser(userData));
       const { username, id } = response.payload;
-      setAuthState({
-        username: username,
-        id: id,
-        status: true,
-      });
+      dispatch(
+        setAuthState({
+          username: username,
+          id: id,
+          status: true,
+        })
+      );
       navigate("/");
     } catch (error) {
       console.log(error);
@@ -47,7 +51,7 @@ const Login = ({ setAuthState }) => {
           }}
         />
         <button onClick={handleLogin} type="submit">
-          Login
+          {loading ? "Logging in..." : "login"}
         </button>
       </div>
       <p>

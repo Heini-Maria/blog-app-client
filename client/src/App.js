@@ -1,6 +1,7 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import "./style.css";
+import { setAuthState } from "./AppSlice";
 import axios from "axios";
 import Header from "./Components/Header";
 import Posts from "./pages/Posts";
@@ -12,17 +13,11 @@ import Registration from "./pages/Registration";
 import ErrorPage from "./pages/ErrorPage";
 import { accessToken } from "./helpers/utils";
 import ErrorBoundary from "./helpers/ErrorBoundary";
-
-export const ThemeContext = createContext(null);
-export const AuthContext = createContext("");
+import { useDispatch, useSelector } from "react-redux";
 
 const App = () => {
-  const [theme, setTheme] = useState("light");
-  const [authState, setAuthState] = useState({
-    username: "",
-    id: 0,
-    status: false,
-  });
+  const dispatch = useDispatch();
+  const { authState, theme } = useSelector((state) => state.app);
 
   useEffect(() => {
     const authCheck = async () => {
@@ -36,10 +31,10 @@ const App = () => {
           }
         );
         if (response.data.error) {
-          setAuthState({ ...authState, status: false });
+          dispatch(setAuthState({ ...authState, status: false }));
         } else {
           const { username, id } = response.data;
-          setAuthState({ username: username, id: id, status: true });
+          dispatch(setAuthState({ username: username, id: id, status: true }));
         }
       } catch (error) {
         console.log(error);
@@ -48,47 +43,21 @@ const App = () => {
     authCheck();
   }, []);
 
-  const toggleTheme = () => {
-    setTheme((curr) => (curr === "light" ? "dark" : "light"));
-  };
-
   return (
-    <AuthContext.Provider value={{ authState, setAuthState }}>
-      <ThemeContext.Provider value={{ theme, setTheme }}>
-        <Router>
-          <div className="background" id={theme}>
-            <Header
-              authState={authState}
-              setAuthState={setAuthState}
-              theme={theme}
-              setTheme={setTheme}
-              toggleTheme={toggleTheme}
-            />
-            <Routes>
-              <Route exact path="details/:id/edit" element={<EditPost />} />
-              <Route
-                exact
-                path="details/:id"
-                element={<PostDetails authState={authState} />}
-              />
-              <Route
-                exact
-                path="/post"
-                element={<AddPost authState={authState} />}
-              />
-              <Route exact path="/registration" element={<Registration />} />
-              <Route
-                exact
-                path="/login"
-                element={<Login setAuthState={setAuthState} />}
-              />
-              <Route exact path="/error" element={<ErrorPage />} />
-              <Route exact path="/" element={<Posts authState={authState} />} />
-            </Routes>
-          </div>
-        </Router>
-      </ThemeContext.Provider>
-    </AuthContext.Provider>
+    <Router>
+      <div className="background" id={theme}>
+        <Header />
+        <Routes>
+          <Route exact path="details/:id/edit" element={<EditPost />} />
+          <Route exact path="details/:id" element={<PostDetails />} />
+          <Route exact path="/post" element={<AddPost />} />
+          <Route exact path="/registration" element={<Registration />} />
+          <Route exact path="/login" element={<Login />} />
+          <Route exact path="/error" element={<ErrorPage />} />
+          <Route exact path="/" element={<Posts />} />
+        </Routes>
+      </div>
+    </Router>
   );
 };
 

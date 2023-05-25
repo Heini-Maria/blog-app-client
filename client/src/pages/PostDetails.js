@@ -12,14 +12,16 @@ import {
 import { FaRegComment, FaTrash, FaPen, FaRegStar } from "react-icons/fa";
 import { accessToken, prettyDate } from "../helpers/utils";
 import { commentSchema } from "../helpers/commentValidation";
+import LoadingAnimation from "../helpers/LoadingAnimation";
 
-const PostDetails = ({ authState }) => {
+const PostDetails = () => {
   let navigate = useNavigate();
   const { id } = useParams();
   const dispatch = useDispatch();
-  const { post, comments, newComment, error } = useSelector(
+  const { post, comments, newComment, error, loading } = useSelector(
     (state) => state.postDetails
   );
+  const { authState } = useSelector((state) => state.app);
 
   useEffect(() => {
     if (!accessToken()) {
@@ -28,7 +30,11 @@ const PostDetails = ({ authState }) => {
       dispatch(fetchPost({ postId: id, accessToken: accessToken() }));
       dispatch(fetchComments(id));
     }
-  }, [dispatch, id, handleAddComment]);
+  }, [id]);
+
+  if (loading) {
+    return <LoadingAnimation />;
+  }
 
   const handleDeletePost = async () => {
     await dispatch(deletePost(id, accessToken()));
