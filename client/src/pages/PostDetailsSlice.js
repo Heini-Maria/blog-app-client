@@ -121,6 +121,17 @@ export const addComment =
     }
   };
 
-
+export const updatePostLike = (postId, accessToken) => async () => {
+  const response = await axios.post(
+    `https://blog-app-api-production-651f.up.railway.app/likes`,
+    { PostId: postId },
+    {
+      headers: {
+        accessToken: accessToken,
+      },
+    }
+  );
+  return response;
+};
 
 export default postDetailsSlice.reducer;

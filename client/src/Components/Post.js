@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FaStar, FaRegStar, FaRegComment } from "react-icons/fa";
 import { prettyDate, accessToken } from "../helpers/utils";
-import { updatePostLike } from "../pages/PostsSlice";
+import { updatePostLike } from "../pages/PostDetailsSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 const Post = ({ post, likes }) => {

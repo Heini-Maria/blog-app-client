@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { fetchPosts } from "./PostsSlice";
 import Post from "../Components/Post";
 import { accessToken } from "../helpers/utils";
