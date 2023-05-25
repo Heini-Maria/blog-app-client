@@ -1,17 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 import { accessToken } from "../helpers/utils";
 import { fetchPost, editPost } from "../pages/PostDetailsSlice";
 import { postSchema } from "../helpers/postValidation";
-import FormFields from "./FormFields";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 
 const EditPost = () => {
   let navigate = useNavigate();
   const { id } = useParams();
   const dispatch = useDispatch();
   const post = useSelector((state) => state.postDetails.post);
-  const [error, setError] = useState("");
+  const initialValues = {
+    title: post?.title || "",
+    post: post?.post || "",
+  };
 
   useEffect(() => {
     if (!accessToken()) {
@@ -21,18 +25,9 @@ const EditPost = () => {
     }
   }, [dispatch, id, accessToken]);
 
-  const handleEdit = async (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const obj = {
-      title: formData.get("title") ?? "",
-      post: formData.get("postText") ?? "",
-    };
+  const handleEdit = async (obj) => {
     const isValid = await postSchema.isValid(obj);
-    if (!isValid) {
-      setError("post can only contain letters, numbers and - ! . , ? : or )");
-      return;
-    } else {
+    if (isValid) {
       dispatch(editPost({ id, obj, accessToken: accessToken() }))
         .unwrap()
         .then(() => {
@@ -44,9 +39,40 @@ const EditPost = () => {
   return (
     <div className="new-post-view">
       <h2>Edit Post</h2>
-      <form action="" onSubmit={handleEdit} onChange={handleEdit}>
-        <FormFields post={post} error={error} setError={setError} />
-      </form>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={postSchema}
+        enableReinitialize={true}
+        onSubmit={handleEdit}
+      >
+        <Form className="form">
+          <label htmlFor="title">*Title: </label>
+          <Field autoComplete="off" id="title" name="title" />
+          <span className="error-msg">
+            <ErrorMessage name="title" component="span" />
+          </span>
+          <label htmlFor="post">*Text: </label>
+          <Field
+            autoComplete="off"
+            id="post"
+            name="post"
+            type="text"
+            as="textarea"
+          />
+          <span className="error-msg">
+            <ErrorMessage name="post" component="span" />
+          </span>
+          <p>* required</p>
+          <div>
+            <Link className="button cancel" to="/">
+              Cancel
+            </Link>
+            <button className="button" type="submit">
+              Save
+            </button>
+          </div>
+        </Form>
+      </Formik>
     </div>
   );
 };

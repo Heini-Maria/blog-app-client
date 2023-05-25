@@ -21,8 +21,11 @@ const AddPost = () => {
   }, []);
 
   const handleAddPost = async (obj) => {
-    await dispatch(addPost(obj, accessToken()));
-    navigate("/");
+    const isValid = await postSchema.isValid(obj);
+    if (isValid) {
+      await dispatch(addPost(obj, accessToken()));
+      navigate("/");
+    }
   };
 
   return (
