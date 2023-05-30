@@ -4,13 +4,13 @@ const { Posts, Likes, Comments } = require("../models");
 const { validateToken } = require("../middleware/authMiddleware");
 const { check, validationResult } = require('express-validator');
 
-router.get("/", validateToken, async (req, res) => {
+router.get("/", validateToken, async (res) => {
   const listOfPosts = await Posts.findAll({
     include: [Likes, Comments],
     order: [["updatedAt", "DESC"]],
   });
-  const likedPosts = await Likes.findAll({ where: { UserId: req.user.id } });
-  return res.json({ listOfPosts: listOfPosts, likedPosts: likedPosts });
+  
+  return res.json({ listOfPosts: listOfPosts });
 });
 router.get("/byId/:id", validateToken, async (req, res) => {
   const id = req.params.id;
