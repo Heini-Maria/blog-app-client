@@ -18,7 +18,7 @@ const Header = () => {
         status: false,
       })
     );
-    navigate("/login");
+    navigate(0);
   };
 
   const toggleTheme = () => {
