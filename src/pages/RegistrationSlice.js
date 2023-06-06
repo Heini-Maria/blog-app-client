@@ -13,7 +13,11 @@ export const registerUser = createAsyncThunk(
       const response = await axios.post(
         "https://blog-app-api-production-651f.up.railway.app/auth",
         userData
-      );
+    );
+    if (response.data.error) {
+      alert(response.data.error);
+      return response.data;
+    }
       return response.data;
   }
 );

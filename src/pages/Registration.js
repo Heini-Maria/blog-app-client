@@ -16,8 +16,10 @@ const Registration = () => {
   };
 
   const onSubmit = (data) => {
-    dispatch(registerUser(data)).then(() => {
-      navigate("/login");
+    dispatch(registerUser(data)).then((response) => {
+      if (!response.payload.error) {
+        navigate("/login");
+      }
     });
   };
 
