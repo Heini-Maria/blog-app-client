@@ -87,9 +87,9 @@ const PostDetails = () => {
       </div>
       <h3>{comments.length} comments:</h3>
       <ul>
-        {comments.map((comment, index) => {
+        {comments.map((comment) => {
           return (
-            <li className="comment" key={index}>
+            <li className="comment" key={comment.id.toString()}>
               <strong>@{comment.username}: </strong>
               {comment.comment}
             </li>

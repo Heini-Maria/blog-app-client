@@ -25,8 +25,8 @@ const Posts = () => {
 
   return (
     <div className="home">
-      {posts.map((post, key) => {
-        return <Post post={post} key={key} likes={post.Likes} />;
+      {posts.map((post) => {
+        return <Post post={post} key={post.id.toString()} likes={post.Likes} />;
       })}
     </div>
   );
